@@ -1,0 +1,45 @@
+# docker-compose.yml
+version: '3.8'
+
+# This service defines the MySQL database container.
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      # The root password for the MySQL database.
+      MYSQL_ROOT_PASSWORD: root
+      # The name of the MySQL database to create.
+      MYSQL_DATABASE: symfony
+      # The username for the MySQL database.
+      MYSQL_USER: symfony
+      # The password for the MySQL database.
+      MYSQL_PASSWORD: symfony
+
+  # This service defines the PHP container.
+  php:
+    image: php:latest
+    container_name: php
+    volumes:
+      # The path to the Symfony project on the host machine.
+      - ./app:/var/www/html
+    command: php -S 0.0.0.0:8000
+
+  # This service defines the PHPMyAdmin container.
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      # The host name of the MySQL database container.
+      PMA_HOST: db
+      # The username for the MySQL database.
+      PMA_USER: symfony
+      # The password for the MySQL database.
+      PMA_PASSWORD: symfony
+    links:
+      # The MySQL database container.
+      - db
+
+# This volume defines the directory on the host machine where the Symfony project is located.
+volumes:
+  app:
